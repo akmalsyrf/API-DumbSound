@@ -2,7 +2,7 @@ const { music, artist } = require("../../models");
 
 exports.getAllMusic = async (req, res) => {
   try {
-    const data = await music.findAll({
+    let data = await music.findAll({
       include: [
         {
           model: artist,
@@ -12,6 +12,9 @@ exports.getAllMusic = async (req, res) => {
       order: [["id", "DESC"]],
       attributes: { exclude: ["idArtist", "createdAt", "updatedAt"] },
     });
+    if (req.query.title) {
+      data = data.filter((item) => item.title.toLowerCase().includes(req.query.title.toLowerCase()));
+    }
     res.status(200).send({
       status: "success",
       data: data,
