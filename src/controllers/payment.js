@@ -2,7 +2,7 @@ const { payment, user } = require("../../models");
 
 exports.getAllPayment = async (req, res) => {
   try {
-    const data = await payment.findAll({
+    let data = await payment.findAll({
       include: [
         {
           model: user,
@@ -11,6 +11,10 @@ exports.getAllPayment = async (req, res) => {
         },
       ],
       attributes: { exclude: ["idUser", "updatedAt"] },
+    });
+    data = JSON.parse(JSON.stringify(data));
+    data = data.map((item) => {
+      return { ...item, attache: process.env.PATH_PROOF + item.attache };
     });
 
     res.status(200).send({

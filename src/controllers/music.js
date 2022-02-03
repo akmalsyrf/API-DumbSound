@@ -9,12 +9,16 @@ exports.getAllMusic = async (req, res) => {
           attributes: { exclude: ["createdAt", "updatedAt"] },
         },
       ],
-      order: [["id", "DESC"]],
       attributes: { exclude: ["idArtist", "createdAt", "updatedAt"] },
     });
+    // make filtering data by query params
     if (req.query.title) {
       data = data.filter((item) => item.title.toLowerCase().includes(req.query.title.toLowerCase()));
     }
+    data = JSON.parse(JSON.stringify(data));
+    data = data.map((item) => {
+      return { ...item, thumbnail: process.env.PATH_MUSIC + item.thumbnail, attache: process.env.PATH_MUSIC + item.attache };
+    });
     res.status(200).send({
       status: "success",
       data: data,
