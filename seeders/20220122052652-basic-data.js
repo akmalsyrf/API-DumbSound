@@ -24,7 +24,7 @@ module.exports = {
         phone: "08179187676",
         address: "Earth",
         listAs: "0",
-        subscribe: "0",
+        subscribe: "1",
       },
     ]);
 
