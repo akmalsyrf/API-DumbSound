@@ -1,5 +1,7 @@
 const { payment, user } = require("../../models");
 
+const cloudinary = require("../utils/cloudinary");
+
 exports.getAllPayment = async (req, res) => {
   try {
     let data = await payment.findAll({
@@ -14,7 +16,7 @@ exports.getAllPayment = async (req, res) => {
     });
     data = JSON.parse(JSON.stringify(data));
     data = data.map((item) => {
-      return { ...item, attache: process.env.PATH_FILE + item.attache };
+      return { ...item, attache: process.env.PATH_IMAGE + item.attache };
     });
 
     res.status(200).send({
@@ -74,9 +76,15 @@ exports.addPayment = async (req, res) => {
       }
     }
 
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "DumbSound",
+      use_filename: true,
+      unique_filename: false,
+    });
+
     const data = await payment.create({
       status: "Pending",
-      attache: req.file.filename,
+      attache: result.public_id,
       dueDate: readyDueDate,
       idUser: req.users.id,
     });

@@ -1,5 +1,7 @@
 const { music, artist } = require("../../models");
 
+const cloudinary = require("../utils/cloudinary");
+
 exports.getAllMusic = async (req, res) => {
   try {
     let data = await music.findAll({
@@ -17,7 +19,7 @@ exports.getAllMusic = async (req, res) => {
     }
     data = JSON.parse(JSON.stringify(data));
     data = data.map((item) => {
-      return { ...item, thumbnail: process.env.PATH_FILE + item.thumbnail, attache: process.env.PATH_FILE + item.attache };
+      return { ...item, thumbnail: process.env.PATH_IMAGE + item.thumbnail, attache: process.env.PATH_MUSIC + item.attache };
     });
     res.status(200).send({
       status: "success",
@@ -37,10 +39,21 @@ exports.addMusic = async (req, res) => {
   // console.log(req.files.attache[0].filename);
   console.log(req.files.attache[0].path);
   try {
+    const resultThumbnail = await cloudinary.uploader.upload(req.files.thumbnail[0].path, {
+      folder: "DumbSound",
+      use_filename: true,
+      unique_filename: false,
+    });
+    const resultMP3 = await cloudinary.uploader.upload(req.files.attache[0].path, {
+      resource_type: "video",
+      folder: "DumbSound",
+      use_filename: true,
+      unique_filename: false,
+    });
     const data = await music.create({
       ...req.body,
-      attache: req.files.attache[0].filename,
-      thumbnail: req.files.thumbnail[0].filename,
+      attache: resultMP3.public_id,
+      thumbnail: resultThumbnail.public_id,
     });
     const value = data.dataValues;
     const artistData = await artist.findOne({
