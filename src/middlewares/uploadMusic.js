@@ -7,7 +7,7 @@ module.exports = (fileUpload) => {
   // make destination file for upload
   const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, `uploads/music`); //file storage location
+      cb(null, `uploads`); //file storage location
     },
     filename: function (req, file, cb) {
       cb(null, Date.now() + "-" + file.originalname.replace(/\s/g, "")); // rename filename by date now + original filename

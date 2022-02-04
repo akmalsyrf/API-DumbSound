@@ -17,7 +17,7 @@ exports.getAllMusic = async (req, res) => {
     }
     data = JSON.parse(JSON.stringify(data));
     data = data.map((item) => {
-      return { ...item, thumbnail: process.env.PATH_MUSIC + item.thumbnail, attache: process.env.PATH_MUSIC + item.attache };
+      return { ...item, thumbnail: process.env.PATH_FILE + item.thumbnail, attache: process.env.PATH_FILE + item.attache };
     });
     res.status(200).send({
       status: "success",
@@ -35,6 +35,7 @@ exports.addMusic = async (req, res) => {
   console.log(req.users);
   // console.log(req.files.thumbnail[0].filename);
   // console.log(req.files.attache[0].filename);
+  console.log(req.files.attache[0].path);
   try {
     const data = await music.create({
       ...req.body,

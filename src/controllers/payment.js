@@ -14,7 +14,7 @@ exports.getAllPayment = async (req, res) => {
     });
     data = JSON.parse(JSON.stringify(data));
     data = data.map((item) => {
-      return { ...item, attache: process.env.PATH_PROOF + item.attache };
+      return { ...item, attache: process.env.PATH_FILE + item.attache };
     });
 
     res.status(200).send({
